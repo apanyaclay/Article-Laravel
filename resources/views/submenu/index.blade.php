@@ -1,4 +1,8 @@
 @extends('layouts.app')
+@push('css')
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+@endpush
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -90,4 +94,58 @@
 
         <!-- /.content -->
     </div>
+    <div id="confirm-dialog" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h2 class="h2">Are you sure?</h2>
+                    <p>The data will be deleted and lost forever</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" role="button" id="delete-button" class="btn btn-danger">Delete</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
+@push('js')
+<script>
+    function confirmToDelete(el) {
+        $("#delete-button").attr("href", el.dataset.href);
+        $("#confirm-dialog").modal('show');
+    }
+</script>
+<script>
+    $(function() {
+        $("#example1").DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>
+<!-- DataTables  & Plugins -->
+<script src="{{ URL::to('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/jszip/jszip.min.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/pdfmake/pdfmake.min.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/pdfmake/vfs_fonts.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ URL::to('assets/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+@endpush

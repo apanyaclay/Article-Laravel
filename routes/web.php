@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Konfigurasi\AksesRoleController;
 use App\Http\Controllers\Konfigurasi\AksesUserController;
@@ -10,7 +12,9 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\Konfigurasi\RoleController;
 use App\Http\Controllers\Konfigurasi\SubMenuController;
 use App\Http\Controllers\Konfigurasi\UserController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,15 +30,60 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('lang/{locale}', function ($locale) {
+    Session::put('locale', $locale);
+    return redirect()->back();
+});
 Route::resource('post', PostController::class);
-Route::get('login', [AuthController::class, 'login'])->name('login');
-Route::post('login', [AuthController::class, 'login_store'])->name('login_store');
-Route::get('register', [AuthController::class, 'register'])->name('register');
-Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function(){
 
 });
+Route::middleware(['guest'])->group(function () {
+    Route::get('login', [AuthController::class, 'login'])->name('login');
+    Route::post('login', [AuthController::class, 'login_store'])->name('login_store');
+    Route::get('register', [AuthController::class, 'register'])->name('register');
+    Route::post('register', [AuthController::class, 'register_store'])->name('register_store');
+
+});
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('notif-list', function () {
+        auth()->user()->notifications->markAsRead();
+        return back();
+    })->name('notif.list');
+
+    Route::controller(ArticleController::class)->group(function(){
+        Route::get('article', 'index')->name('article.index')->middleware('permission:view article');
+        Route::get('article/create', 'create')->name('article.create')->middleware('permission:create article');
+        Route::post('article/create', 'store')->name('article.store');
+        Route::get('article/{id}/detail', 'show')->name('article.show')->middleware('permission:detail article');
+        Route::get('article/{id}/edit', 'edit')->name('article.edit')->middleware('permission:update article');
+        Route::post('article/{id}/edit', 'update')->name('article.update');
+        Route::get('article/{id}/delete', 'destroy')->name('article.destroy')->middleware('permission:delete article');
+    });
+    Route::controller(TagController::class)->group(function(){
+        Route::get('tag', 'index')->name('tag.index')->middleware('permission:view tag');
+        Route::get('tag/create', 'create')->name('tag.create')->middleware('permission:view tag');
+        Route::post('tag/create', 'store')->name('tag.store');
+        Route::get('tag/{id}/edit', 'edit')->name('tag.edit')->middleware('permission:update tag');
+        Route::post('tag/{id}/edit', 'update')->name('tag.update');
+        Route::get('tag/{id}/delete', 'destroy')->name('tag.destroy')->middleware('permission:delete tag');
+    });
+    Route::controller(CategorieController::class)->group(function(){
+        Route::get('category', 'index')->name('category.index')->middleware('permission:view category');
+        Route::get('category/create', 'create')->name('category.create')->middleware('permission:view category');
+        Route::post('category/create', 'store')->name('category.store');
+        Route::get('category/{id}/edit', 'edit')->name('category.edit')->middleware('permission:update category');
+        Route::post('category/{id}/edit', 'update')->name('category.update');
+        Route::get('category/{id}/delete', 'destroy')->name('category.destroy')->middleware('permission:delete category');
+    });
+});
+
+Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
+    \UniSharp\LaravelFilemanager\Lfm::routes();
+});
+
 Route::group(['prefix' => 'konfigurasi', 'middleware' => ['auth']], function(){
     Route::controller(MenuController::class)->group(function(){
         Route::get('menu', 'index')->name('menu.index')->middleware('permission:view menu');
@@ -81,7 +130,7 @@ Route::group(['prefix' => 'konfigurasi', 'middleware' => ['auth']], function(){
         Route::get('akses-user/create', 'create')->name('akses-user.create')->middleware('permission:create akses-user');
         Route::post('akses-user/create', 'store')->name('akses-user.store');
         Route::get('akses-user/{id}/edit', 'edit')->name('akses-user.edit')->middleware('permission:update akses-user');
-        Route::post('akses-user/{id}/edit', 'update')->name('akses-user.update');
+        Route::put('akses-user/{id}/edit', 'update')->name('akses-user.update');
         Route::get('akses-user/{id}/delete', 'destroy')->name('akses-user.destroy')->middleware('permission:delete akses-user');
     });
     Route::controller(UserController::class)->group(function(){

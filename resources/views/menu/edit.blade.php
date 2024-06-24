@@ -1,4 +1,9 @@
 @extends('layouts.app')
+@push('css')
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+@endpush
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -56,6 +61,18 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
+                                                <label>Permission</label>
+                                                <select name="permission_id" id="permission_id" class="form-control select2" style="width: 100%;">
+                                                    <option value="">Select Permission</option>
+                                                    @foreach ($permissions as $item)
+                                                        <option value="{{$item->id}}" {{$menu->permission_id == $item->id ?  'selected' : ''}}>{{$item->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('route') <span class="text-danger">{{$message}}</span> @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
                                                 <label>Description</label>
                                                 <input type="text" class="form-control" placeholder="Enter Description" id="description" name="description" value="{{$menu->description}}">
                                                 @error('description') <span class="text-danger">{{$message}}</span> @enderror
@@ -97,3 +114,14 @@
         <!-- /.content -->
     </div>
 @endsection
+@push('js')
+    <!-- Select2 -->
+    <script src="{{ URL::to('assets/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                theme: 'bootstrap4'
+            })
+        });
+    </script>
+@endpush

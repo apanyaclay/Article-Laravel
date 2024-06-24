@@ -7,6 +7,8 @@ use App\Models\Menu;
 use App\Models\SubMenu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Permission;
 
 class SubMenuController extends Controller
 {
@@ -22,6 +24,7 @@ class SubMenuController extends Controller
         return view('submenu.create', [
             'title' => 'Add Sub Menu',
             'menu' => Menu::all(),
+            'permissions' => Permission::all(),
         ]);
     }
     public function store(Request $request)
@@ -29,8 +32,14 @@ class SubMenuController extends Controller
         $data = $request->validate([
             'name'          => 'required',
             'menu_id'       => 'required',
-            'order_no'      => 'required|unique:sub_menus,order_no',
+            'order_no'      => [
+                'required',
+                Rule::unique('sub_menus')->where(function ($query) use ($request) {
+                    return $query->where('menu_id', $request->menu_id);
+                }),
+            ],
             'route'         => 'required',
+            'permission_id' => 'required',
             'description'   => 'required',
             'is_active'     => 'required',
         ]);
@@ -50,6 +59,7 @@ class SubMenuController extends Controller
             'title' => 'Edit Sub Menu',
             'submenu' => SubMenu::findOrFail($id),
             'menu' => Menu::all(),
+            'permissions' => Permission::all(),
         ]);
     }
     public function update(Request $request, $id)
@@ -57,8 +67,14 @@ class SubMenuController extends Controller
         $data = $request->validate([
             'name'          => 'required',
             'menu_id'       => 'required',
-            'order_no'      => 'required',
+            'order_no'      => [
+                'required',
+                Rule::unique('sub_menus')->where(function ($query) use ($request) {
+                    return $query->where('menu_id', $request->menu_id);
+                })->ignore($id), // $id adalah ID dari item yang sedang diperbarui
+            ],
             'route'         => 'required',
+            'permission_id' => 'required',
             'description'   => 'required',
             'is_active'     => 'required',
         ]);

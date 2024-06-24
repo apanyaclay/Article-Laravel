@@ -5,48 +5,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }} | {{ config('app.name') }}</title>
-
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ URL::to('assets/plugins/fontawesome-free/css/all.min.css') }}">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="{{ URL::to('assets/dist/css/ionicons.min.css') }}">
-    <!-- Tempusdominus Bootstrap 4 -->
-    <link rel="stylesheet"
-        href="{{ URL::to('assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
-    <!-- iCheck -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    <!-- JQVMap -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/jqvmap/jqvmap.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ URL::to('assets/dist/css/adminlte.min.css') }}">
-    <!-- overlayScrollbars -->
+    <!-- flag-icon-css -->
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/flag-icon-css/css/flag-icon.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/daterangepicker/daterangepicker.css') }}">
-    <!-- summernote -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/summernote/summernote-bs4.min.css') }}">
-    <!-- DataTables -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-    {{-- <!-- Select2 -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/select2/css/select2.min.css')}}">
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}"> --}}
-    <!-- Bootstrap4 Duallistbox -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css')}}">
-    <!-- BS Stepper -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/bs-stepper/css/bs-stepper.min.css')}}">
-    <!-- dropzonejs -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/dropzone/min/dropzone.min.css')}}">
-    <link rel="stylesheet"
-        href="{{ URL::to('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
-    <!-- Bootstrap Color Picker -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css')}}">
-
+    <!-- Toastr -->
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/toastr/toastr.min.css') }}">
+    <!-- Pusher -->
     <script src="{{ URL::to('assets/dist/js/pusher.min.js') }}"></script>
-    <script>
+    {{-- <script>
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
@@ -57,35 +30,14 @@
         var channel = pusher.subscribe('my-channel');
         channel.bind('my-event', function(data) {
             let notificationCount = parseInt($('#notification-count').text());
-            $('#notification-count').text(notificationCount + 1);
-
-            // Add new notification to the dropdown
-            $('#notification-menu').prepend(`
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-envelope mr-2"></i> ${data.message}
-                    <span class="float-right text-muted text-sm">Just now</span>
-                </a>
-                <div class="dropdown-divider"></div>
-            `);
-
-            // Update the notification header count
-            $('.dropdown-header').text(`${notificationCount + 1} Notifications`);
-
-            // Optionally show a Toastr notification
             toastr.success(data.message);
         });
-    </script>
+    </script> --}}
+    @stack('css')
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
-
-        <!-- Preloader -->
-        <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{{ URL::to('assets/dist/img/AdminLTELogo.png') }}" alt="AdminLTELogo"
-                height="60" width="60">
-        </div>
-
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <!-- Left navbar links -->
@@ -183,22 +135,111 @@
                         <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
                     </div>
                 </li>
+                <!-- Language Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    @php
+                        $locale = session('locale', config('app.locale'));
+                        $flagIcons = [
+                            'en' => 'us',
+                            'id' => 'id',
+                            'de' => 'de',
+                            'fr' => 'fr',
+                            'es' => 'es',
+                        ];
+                        $currentFlagIcon = $flagIcons[$locale] ?? 'us';
+                    @endphp
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="flag-icon flag-icon-{{ $currentFlagIcon }}"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right p-0">
+                        <a href="{{ url('lang/en') }}" class="dropdown-item {{ $locale == 'en' ? 'active' : '' }}">
+                            <i class="flag-icon flag-icon-us mr-2"></i> English
+                        </a>
+                        <a href="{{ url('lang/id') }}" class="dropdown-item {{ $locale == 'id' ? 'active' : '' }}">
+                            <i class="flag-icon flag-icon-id mr-2"></i> Indonesian
+                        </a>
+                        <a href="{{ url('lang/de') }}" class="dropdown-item {{ $locale == 'de' ? 'active' : '' }}">
+                            <i class="flag-icon flag-icon-de mr-2"></i> German
+                        </a>
+                        <a href="{{ url('lang/fr') }}" class="dropdown-item {{ $locale == 'fr' ? 'active' : '' }}">
+                            <i class="flag-icon flag-icon-fr mr-2"></i> French
+                        </a>
+                        <a href="{{ url('lang/es') }}" class="dropdown-item {{ $locale == 'es' ? 'active' : '' }}">
+                            <i class="flag-icon flag-icon-es mr-2"></i> Spanish
+                        </a>
+                    </div>
+                </li>
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge" id="notification-count">0</span>
+                        <span
+                            class="badge badge-warning navbar-badge">{{ auth()->user()->unreadNotifications->count() }}</span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notification-menu">
-                        <span class="dropdown-item dropdown-header">0 Notifications</span>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <span class="dropdown-item dropdown-header">{{ auth()->user()->unreadNotifications->count() }}
+                            Notifications</span>
+                        @foreach (auth()->user()->unreadNotifications as $notification)
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-envelope mr-2"></i> {{ $notification->data['messages'] }}
+                                <span
+                                    class="float-right text-muted text-sm">{{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                        @endforeach
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                        <form action="{{ route('notif.list') }}" method="post">
+                            @csrf
+                            <button type="submit" class="dropdown-item dropdown-footer">Mark all as read</button>
+                        </form>
                     </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                         <i class="fas fa-expand-arrows-alt"></i>
                     </a>
+                </li>
+                <li class="nav-item dropdown user-menu">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                        <img src="{{ asset('assets/images/profile/' . Auth::user()->profile_photo_path) }}"
+                            class="user-image img-circle elevation-2" alt="User Image">
+                        <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <!-- User image -->
+                        <li class="user-header bg-primary">
+                            <img src="{{ asset('assets/images/profile/' . Auth::user()->profile_photo_path) }}"
+                                class="img-circle elevation-2" alt="User Image">
+
+                            <p>
+                                {{ Auth::user()->name }} - @foreach (Auth::user()->getRoleNames() as $item)
+                                    {{ $item }}
+                                @endforeach
+                                <small>Member since
+                                    {{ \Carbon\Carbon::parse(Auth::user()->created_at)->format('M, Y') }}</small>
+                            </p>
+                        </li>
+                        <!-- Menu Body -->
+                        <li class="user-body">
+                            <div class="row">
+                                <div class="col-4 text-center">
+                                    <a href="#">Followers</a>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <a href="#">Sales</a>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <a href="#">Friends</a>
+                                </div>
+                            </div>
+                            <!-- /.row -->
+                        </li>
+                        <!-- Menu Footer-->
+                        <li class="user-footer">
+                            <a href="#" class="btn btn-default btn-flat">Profile</a>
+                            <a href="{{ route('logout') }}" class="btn btn-default btn-flat float-right">Sign out</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true"
@@ -232,27 +273,6 @@
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
-    <div id="confirm-dialog" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <h2 class="h2">Are you sure?</h2>
-                    <p>The data will be deleted and lost forever</p>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" role="button" id="delete-button" class="btn btn-danger">Delete</a>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        function confirmToDelete(el) {
-            $("#delete-button").attr("href", el.dataset.href);
-            $("#confirm-dialog").modal('show');
-        }
-    </script>
-
     <!-- jQuery -->
     <script src="{{ URL::to('assets/plugins/jquery/jquery.min.js') }}"></script>
     <!-- jQuery UI 1.11.4 -->
@@ -263,79 +283,33 @@
     </script>
     <!-- Bootstrap 4 -->
     <script src="{{ URL::to('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <!-- ChartJS -->
-    <script src="{{ URL::to('assets/plugins/chart.js/Chart.min.js') }}"></script>
-    <!-- Sparkline -->
-    <script src="{{ URL::to('assets/plugins/sparklines/sparkline.js') }}"></script>
-    <!-- JQVMap -->
-    <script src="{{ URL::to('assets/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="{{ URL::to('assets/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
-    <!-- daterangepicker -->
-    <script src="{{ URL::to('assets/plugins/moment/moment.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/daterangepicker/daterangepicker.js') }}"></script>
-    <!-- Tempusdominus Bootstrap 4 -->
-    <script src="{{ URL::to('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-    <!-- Summernote -->
-    <script src="{{ URL::to('assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
-    <!-- overlayScrollbars -->
-    <script src="{{ URL::to('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+
     <!-- AdminLTE App -->
     <script src="{{ URL::to('assets/dist/js/adminlte.js') }}"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ URL::to('assets/dist/js/demo.js') }}"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{ URL::to('assets/dist/js/pages/dashboard.js') }}"></script>
-    <!-- DataTables  & Plugins -->
-    <script src="{{ URL::to('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/jszip/jszip.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ URL::to('assets/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-    <!-- Select2 -->
-    <script src="{{ URL::to('assets/plugins/select2/js/select2.full.min.js')}}"></script>
-    <!-- Bootstrap4 Duallistbox -->
-    <script src="{{ URL::to('assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js')}}"></script>
-    <!-- InputMask -->
-    <script src="{{ URL::to('assets/plugins/moment/moment.min.js')}}"></script>
-    <script src="{{ URL::to('assets/plugins/inputmask/jquery.inputmask.min.js')}}"></script>
-    <!-- date-range-picker -->
-    <script src="{{ URL::to('assets/plugins/daterangepicker/daterangepicker.js')}}"></script>
-    <!-- bootstrap color picker -->
-    <script src="{{ URL::to('assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js')}}"></script>
-    <!-- Bootstrap Switch -->
-    <script src="{{ URL::to('assets/plugins/bootstrap-switch/js/bootstrap-switch.min.js')}}"></script>
-    <!-- BS-Stepper -->
-    <script src="{{ URL::to('assets/plugins/bs-stepper/js/bs-stepper.min.js')}}"></script>
-    <!-- dropzonejs -->
-    <script src="{{ URL::to('assets/plugins/dropzone/min/dropzone.min.js')}}"></script>
+
+    <!-- Toastr -->
+    <script src="{{ URL::to('assets/plugins/toastr/toastr.min.js') }}"></script>
+
     <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
+        $(document).ready(function() {
+            @if (session('success'))
+                toastr.success('{{ session('success') }}');
+            @endif
+
+            @if (session('info'))
+                toastr.info('{{ session('info') }}');
+            @endif
+
+            @if (session('error'))
+                toastr.error('{{ session('error') }}');
+            @endif
+
+            @if (session('warning'))
+                toastr.warning('{{ session('warning') }}');
+            @endif
         });
     </script>
+    @stack('js')
 </body>
 
 </html>

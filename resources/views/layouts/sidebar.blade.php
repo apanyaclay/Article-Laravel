@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{route('dashboard')}}" class="brand-link">
+    <a href="{{ route('dashboard') }}" class="brand-link">
         <img src="{{ URL::to('assets/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
             class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Apanya</span>
@@ -8,15 +8,6 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Sidebar user (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-              <img src="{{ URL::to('assets/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
-            </div>
-            <div class="info">
-              <a href="#" class="d-block">{{Auth::user()->name}}</a>
-            </div>
-          </div>
         <!-- SidebarSearch Form -->
         <div class="form-inline">
             <div class="input-group" data-widget="sidebar-search">
@@ -64,6 +55,9 @@
                                     <p>
                                         {{ $menu->name }}
                                         <i class="right fas fa-angle-left"></i>
+                                        @if ($menu->created_at && $menu->created_at->diffInDays(now()) <= 7)
+                                            <span class="right badge badge-danger">New</span>
+                                        @endif
                                     </p>
                                 </a>
                                 <ul class="nav nav-treeview">
@@ -73,7 +67,11 @@
                                                 <a href="{{ route($submenu->route) }}"
                                                     class="nav-link {{ Request::routeIs($submenu->route) ? 'active' : '' }}">
                                                     <i class="far fa-circle nav-icon"></i>
-                                                    <p>{{ $submenu->permission->name }}</p>
+                                                    <p>{{ $submenu->name }}
+                                                        @if ($menu->created_at && $menu->created_at->diffInDays(now()) <= 7)
+                                                            <span class="right badge badge-danger">New</span>
+                                                        @endif
+                                                    </p>
                                                 </a>
                                             </li>
                                         @endcan
@@ -92,6 +90,9 @@
                                         <i class="nav-icon {{ $menu->icon }}"></i>
                                         <p>
                                             {{ $menu->name }}
+                                            @if ($menu->created_at && $menu->created_at->diffInDays(now()) <= 7)
+                                                <span class="right badge badge-danger">New</span>
+                                            @endif
                                         </p>
                                     </a>
                                 </li>
@@ -99,28 +100,21 @@
                         @else
                             <li class="nav-item">
                                 <a href="@if ($menu->route == '#') #
-                        @else
-                            {{ route($menu->route) }} @endif"
+                                    @else
+                                        {{ route($menu->route) }} @endif"
                                     class="nav-link {{ $isActive ? 'active' : '' }}">
                                     <i class="nav-icon {{ $menu->icon }}"></i>
                                     <p>
                                         {{ $menu->name }}
+                                        @if ($menu->created_at && $menu->created_at->diffInDays(now()) <= 7)
+                                            <span class="right badge badge-danger">New</span>
+                                        @endif
                                     </p>
                                 </a>
                             </li>
                         @endif
                     @endif
                 @endforeach
-                @role('super admin')
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>
-                                Setting
-                            </p>
-                        </a>
-                    </li>
-                @endrole
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

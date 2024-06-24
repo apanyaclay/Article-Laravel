@@ -43,5 +43,11 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_seen_at' => 'datetime',
     ];
+
+    public function isOnline(): bool
+    {
+        return $this->last_seen_at ? $this->last_seen_at->diffInSeconds(now()) <= 60 : false;
+    }
 }

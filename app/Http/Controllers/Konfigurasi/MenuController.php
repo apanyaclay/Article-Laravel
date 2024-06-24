@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Konfigurasi;
 
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
+use App\Notifications\TelegramNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Permission;
 
 class MenuController extends Controller
 {
@@ -20,6 +23,7 @@ class MenuController extends Controller
     {
         return view('menu.create', [
             'title' => 'Add Menu',
+            'permissions' => Permission::all(),
         ]);
     }
     public function store(Request $request)
@@ -34,11 +38,13 @@ class MenuController extends Controller
         ]);
         DB::beginTransaction();
         try {
-            Menu::create($data);
+            $menu = Menu::create($data);
+            $menu->notify(new TelegramNotification());
             DB::commit();
             return redirect()->route('menu.index')->with('success', 'Menu berhasil ditambahkan');
         } catch (\Exception $th) {
             DB::rollBack();
+            Log::error('error:', [$th->getMessage()]);
             return redirect()->route('menu.create')->with('error', 'Menu gagal ditambahkan');
         }
     }
@@ -47,6 +53,7 @@ class MenuController extends Controller
         return view('menu.edit', [
             'title' => 'Edit Menu',
             'menu' => Menu::findOrFail($id),
+            'permissions' => Permission::all(),
         ]);
     }
     public function update(Request $request, $id)
@@ -54,7 +61,7 @@ class MenuController extends Controller
         $data = $request->validate([
             'name'          => 'required',
             'icon'          => 'required',
-            'order_no'      => 'required',
+            'order_no'      => 'required|unique:menus,order_no,'.$id,
             'route'         => 'required',
             'description'   => 'required',
             'is_active'     => 'required',

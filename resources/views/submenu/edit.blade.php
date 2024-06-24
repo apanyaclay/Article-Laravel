@@ -1,4 +1,9 @@
 @extends('layouts.app')
+@push('css')
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+@endpush
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -43,7 +48,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label>Menu</label>
-                                                <select name="menu_id" id="menu_id">
+                                                <select name="menu_id" id="menu_id" class="form-control">
                                                     @foreach ($menu as $item)
                                                         <option value="{{$item->id}}" {{$item->id == $submenu->menu_id ? 'selected': ''}}>{{$item->name}}</option>
                                                     @endforeach
@@ -55,6 +60,18 @@
                                             <div class="form-group">
                                                 <label>Route</label>
                                                 <input type="text" class="form-control" placeholder="Enter Route" id="route" name="route" value="{{$submenu->route}}">
+                                                @error('route') <span class="text-danger">{{$message}}</span> @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Permission</label>
+                                                <select name="permission_id" id="permission_id" class="form-control select2" style="width: 100%;">
+                                                    <option value="">Select Permission</option>
+                                                    @foreach ($permissions as $item)
+                                                        <option value="{{$item->id}}" {{$submenu->permission_id == $item->id ?  'selected' : ''}}>{{$item->name}}</option>
+                                                    @endforeach
+                                                </select>
                                                 @error('route') <span class="text-danger">{{$message}}</span> @enderror
                                             </div>
                                         </div>
@@ -75,7 +92,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label>Active</label>
-                                                <select name="is_active" id="is_active">
+                                                <select name="is_active" id="is_active" class="form-control">
                                                     <option value="1" {{$submenu->is_active == 1 ? 'selected' : ''}}>Active</option>
                                                     <option value="0" {{$submenu->is_active == 0 ? 'selected' : ''}}>Not Active</option>
                                                 </select>
@@ -101,3 +118,14 @@
         <!-- /.content -->
     </div>
 @endsection
+@push('js')
+    <!-- Select2 -->
+    <script src="{{ URL::to('assets/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                theme: 'bootstrap4'
+            })
+        });
+    </script>
+@endpush
