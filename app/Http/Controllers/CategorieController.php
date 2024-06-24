@@ -10,57 +10,61 @@ class CategorieController extends Controller
 {
     public function index()
     {
-        return view('', [
-            'title' => 'Articles'
+        return view('category.index', [
+            'title' => 'Category',
+            'categories' => Categorie::all()
         ]);
     }
     public function create()
     {
-        return view('', [
-            'title' => 'Add Articles'
+        return view('category.create', [
+            'title' => 'Add Category',
+            'categories' => Categorie::all(),
         ]);
     }
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required',
+            'name'          => 'required',
+            'slug'          => 'required|unique:categories,slug',
+            'description'   => 'nullable',
+            'parent_id'     => 'nullable',
         ]);
         DB::beginTransaction();
         try {
             Categorie::create($data);
             DB::commit();
-            return redirect()->route('categorie.index')->with('success', 'Article update successfully');
+            return redirect()->route('category.index')->with('success', 'Category update successfully');
         } catch (\Exception $th) {
             DB::rollBack();
-            return redirect()->route('categorie.index')->with('error', 'Failed to update article');
+            return redirect()->back()->with('error', 'Failed to update category');
         }
-    }
-    public function show($id)
-    {
-        return view('', [
-            'title' => 'Detail Articles'
-        ]);
     }
     public function edit($id)
     {
-        return view('', [
-            'title' => 'Edit Articles'
+        return view('category.edit', [
+            'title' => 'Edit Category',
+            'categorie' => Categorie::find($id),
+            'categories' => Categorie::all(),
         ]);
     }
     public function update(Request $request, $id)
     {
         $data = $request->validate([
-            'name' => 'required',
+            'name'          => 'required',
+            'slug'          => 'required|unique:categories,slug,'.$id,
+            'description'   => 'nullable',
+            'parent_id'     => 'nullable',
         ]);
         DB::beginTransaction();
         try {
             $categorie = Categorie::find($id);
             $categorie->update($data);
             DB::commit();
-            return redirect()->route('categorie.index')->with('success', 'Article update successfully');
+            return redirect()->route('category.index')->with('success', 'Category update successfully');
         } catch (\Exception $th) {
             DB::rollBack();
-            return redirect()->route('categorie.index')->with('error', 'Failed to update article');
+            return redirect()->back()->with('error', 'Failed to update category');
         }
     }
     public function destroy($id)
@@ -69,10 +73,10 @@ class CategorieController extends Controller
         try {
             Categorie::destroy($id);
             DB::commit();
-            return redirect()->route('categorie.index')->with('success', 'Article deleted successfully');
+            return redirect()->route('category.index')->with('success', 'Category deleted successfully');
         } catch (\Exception $th) {
             DB::rollBack();
-            return redirect()->route('categorie.index')->with('error', 'Failed to delete article');
+            return redirect()->route('category.index')->with('error', 'Failed to delete category');
         }
     }
 }
