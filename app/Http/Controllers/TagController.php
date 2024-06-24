@@ -10,20 +10,22 @@ class TagController extends Controller
 {
     public function index()
     {
-        return view('', [
-            'title' => 'Articles'
+        return view('tag.index', [
+            'title' => 'Tag',
+            'tags' => Tag::all(),
         ]);
     }
     public function create()
     {
-        return view('', [
-            'title' => 'Add Articles'
+        return view('tag.create', [
+            'title' => 'Add Tag'
         ]);
     }
     public function store(Request $request)
     {
         $data = $request->validate([
             'name' => 'required',
+            'slug' => 'required',
         ]);
         DB::beginTransaction();
         try {
@@ -35,22 +37,18 @@ class TagController extends Controller
             return redirect()->route('tag.index')->with('error', 'Failed to update article');
         }
     }
-    public function show($id)
-    {
-        return view('', [
-            'title' => 'Detail Articles'
-        ]);
-    }
     public function edit($id)
     {
-        return view('', [
-            'title' => 'Edit Articles'
+        return view('tag.edit', [
+            'title' => 'Edit Tag',
+            'tag' => Tag::find($id),
         ]);
     }
     public function update(Request $request, $id)
     {
         $data = $request->validate([
             'name' => 'required',
+            'slug' => 'required',
         ]);
         DB::beginTransaction();
         try {
