@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Article extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
     protected $fillable = [
         'author',
         'category_id',
@@ -20,7 +21,7 @@ class Article extends Model
         'published_date',
         'views',
     ];
-    public function author()
+    public function Author()
     {
         return $this->belongsTo(User::class, 'author', 'id');
     }
@@ -34,7 +35,7 @@ class Article extends Model
     }
     public function tags()
     {
-        return $this->hasMany(ArticleTag::class);
+        return $this->belongsToMany(Tag::class, 'article_tags', 'article_id', 'tag_id');
     }
 
 }
