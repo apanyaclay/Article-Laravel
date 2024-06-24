@@ -10,11 +10,13 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/fontawesome-free/css/all.min.css')}}">
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="{{ URL::to('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{ URL::to('assets/dist/css/adminlte.min.css')}}">
+    <link rel="stylesheet" href="{{ URL::to('assets/dist/css/adminlte.min.css') }}">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/toastr/toastr.min.css') }}">
 </head>
 
 <body class="hold-transition login-page">
@@ -26,8 +28,16 @@
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
-
-                <form action="{{route('login_store')}}" method="post">
+                @if ($errors->any())
+                    <div id="error-container" class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <form action="{{ route('login_store') }}" method="post">
                     @csrf
                     <div class="input-group mb-3">
                         <input type="email" class="form-control" placeholder="Email" name="email" id="email">
@@ -38,7 +48,8 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password" name="password" id="password">
+                        <input type="password" class="form-control" placeholder="Password" name="password"
+                            id="password">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -74,10 +85,10 @@
                 <!-- /.social-auth-links -->
 
                 <p class="mb-1">
-                    <a href="forgot-password.html">I forgot my password</a>
+                    <a href="#">I forgot my password</a>
                 </p>
                 <p class="mb-0">
-                    <a href="register.html" class="text-center">Register a new membership</a>
+                    <a href="{{route('register')}}" class="text-center">Register a new membership</a>
                 </p>
             </div>
             <!-- /.login-card-body -->
@@ -86,11 +97,39 @@
     <!-- /.login-box -->
 
     <!-- jQuery -->
-    <script src="{{ URL::to('assets/plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{ URL::to('assets/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
-    <script src="{{ URL::to('assets/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ URL::to('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
-    <script src="{{ URL::to('assets/dist/js/adminlte.min.js')}}"></script>
+    <script src="{{ URL::to('assets/dist/js/adminlte.min.js') }}"></script>
+    <!-- Toastr -->
+    <script src="{{ URL::to('assets/plugins/toastr/toastr.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('#error-container').fadeOut();
+            }, 3000);
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            @if (session('success'))
+                toastr.success('{{ session('success') }}');
+            @endif
+
+            @if (session('info'))
+                toastr.info('{{ session('info') }}');
+            @endif
+
+            @if (session('error'))
+                toastr.error('{{ session('error') }}');
+            @endif
+
+            @if (session('warning'))
+                toastr.warning('{{ session('warning') }}');
+            @endif
+        });
+    </script>
 </body>
 
 </html>
