@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Konfigurasi;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
@@ -52,11 +53,15 @@ class AksesRoleController extends Controller
         try {
             $role = Role::findOrFail($id);
             $role->syncPermissions($request->permission);
+            $users = User::role($role->name)->get();
+            foreach ($users as $user) {
+                $user->syncPermissions($request->permission);
+            }
             DB::commit();
-            return redirect()->route('akses-role.index');
+            return redirect()->back()->with('success', 'Akses Role berhasil diupdate');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back();
+            return redirect()->back()->with('error', 'Akses Role gagal diupdate');
         }
     }
 }

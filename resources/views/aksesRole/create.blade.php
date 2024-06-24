@@ -6,7 +6,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">{{ $title }}</h1>
+                        <h1 class="m-0">{{ $title }} for {{$role->name}}</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -38,7 +38,7 @@
                                         <div class="col-md-3">
                                             <h5>{{ucfirst($value)}} Permissions</h5>
                                             @foreach ($permission as $item)
-                                                @if (Str::contains($item->name, $value))
+                                                @if (Str::contains($item->name, $value) && strlen(explode(' ', $item->name)[1]) === strlen($value))
                                                     <div class="form-group">
                                                         <div class="custom-control custom-switch">
                                                             <input type="checkbox" class="custom-control-input"
