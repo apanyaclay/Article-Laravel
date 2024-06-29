@@ -72,6 +72,9 @@ class ArticleController extends Controller
                 ]);
             }
             if ($data['status'] == 'published') {
+                $article->update([
+                    'published_date' => now(),
+                ]);
                 $telegram = [
                     'title' => $request->title,
                     'slug' => $request->slug,
@@ -156,6 +159,9 @@ class ArticleController extends Controller
                 ]);
             }
             if ($request->status == 'published') {
+                $article->update([
+                    'published_date' => now(),
+                ]);
                 $telegram = [
                     'title' => $request->title,
                     'slug' => $request->slug,

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Konfigurasi\AksesRoleController;
@@ -140,5 +141,17 @@ Route::group(['prefix' => 'konfigurasi', 'middleware' => ['auth']], function(){
         Route::get('user/{id}/edit', 'edit')->name('user.edit')->middleware('permission:update user');
         Route::put('user/{id}/edit', 'update')->name('user.update');
         Route::get('user/{id}/delete', 'destroy')->name('user.destroy')->middleware('permission:delete user');
+    });
+});
+
+Route::group(['prefix' => 'blog'], function(){
+    Route::controller(BlogController::class)->group(function(){
+        Route::get('/', 'index')->name('blog.index');
+        Route::get('/article', 'article')->name('blog.article');
+        Route::get('/{slug}', 'show')->name('blog.show');
+        Route::get('/tag/{id}', 'tag')->name('blog.tag');
+        Route::get('/category/{id}', 'category')->name('blog.category');
+        Route::get('/about', 'about')->name('blog.about');
+        Route::get('/contact', 'contact')->name('blog.contact');
     });
 });

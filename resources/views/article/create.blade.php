@@ -155,7 +155,8 @@
 @endsection
 @push('js')
     <!-- CKeditor -->
-    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+    <script src="{{ asset('ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js') }}"></script>
     <!-- Select2 -->
     <script src="{{ URL::to('assets/plugins/select2/js/select2.full.min.js') }}"></script>
 
@@ -175,6 +176,7 @@
                 filebrowserBrowseUrl: '{{ url('/laravel-filemanager?type=Files') }}',
                 filebrowserUploadUrl: '{{ url('/laravel-filemanager/upload?type=Files&_token=') }}{{ csrf_token() }}',
                 clipboard_handleImages: false,
+                codeSnippet_theme: 'ir_black'
             };
 
             CKEDITOR.replace('editor', options);

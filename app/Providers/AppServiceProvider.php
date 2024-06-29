@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Menu;
+use Carbon\Carbon;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,9 +23,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('layouts.sidebar', function ($view){
+        View::composer('layouts.sidebar', function ($view) {
             $menus = Menu::with('submenus')->orderBy('order_no')->get();
             $view->with('menus', $menus);
         });
+        Paginator::useBootstrapFive();
+        Paginator::useBootstrapFour();
     }
 }
