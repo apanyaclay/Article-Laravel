@@ -176,7 +176,9 @@
                 filebrowserBrowseUrl: '{{ url('/laravel-filemanager?type=Files') }}',
                 filebrowserUploadUrl: '{{ url('/laravel-filemanager/upload?type=Files&_token=') }}{{ csrf_token() }}',
                 clipboard_handleImages: false,
-                codeSnippet_theme: 'ir_black'
+                codeSnippet_theme: 'ir_black',
+                extraAllowedContent: 'pre; code',
+                allowedContent: true
             };
 
             CKEDITOR.replace('editor', options);

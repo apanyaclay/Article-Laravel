@@ -54,8 +54,7 @@
                                             <div class="form-group">
                                                 <label>Slug</label>
                                                 <input type="text" class="form-control" placeholder="Enter Slug"
-                                                    id="slug" name="slug"
-                                                    value="{{ old('slug', $article->slug) }}">
+                                                    id="slug" name="slug" value="{{ old('slug', $article->slug) }}">
                                                 @error('slug')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -64,7 +63,7 @@
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label>Content</label>
-                                                <textarea name="content" id="editor" class="form-control">{!! old('content', $article->content) !!}</textarea>
+                                                <textarea name="content" id="editor" class="form-control"> {{ old('content', $article->content)}}</textarea>
                                                 @error('content')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -194,7 +193,9 @@
                 filebrowserBrowseUrl: '{{ url('/laravel-filemanager?type=Files') }}',
                 filebrowserUploadUrl: '{{ url('/laravel-filemanager/upload?type=Files&_token=') }}{{ csrf_token() }}',
                 clipboard_handleImages: false,
-                codeSnippet_theme: 'ir_black'
+                codeSnippet_theme: 'ir_black',
+                extraAllowedContent: 'pre; code',
+                allowedContent: true
             };
 
             CKEDITOR.replace('editor', options);
