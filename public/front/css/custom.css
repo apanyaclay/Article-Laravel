@@ -25,7 +25,8 @@
     text-decoration: none;
 }
 
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
 }
@@ -37,4 +38,21 @@ body {
 
 footer {
     padding: 1rem 0;
+}
+
+.hljs {
+    position: relative;
+    padding-top: 1.5em;
+}
+
+.hljs::before {
+    content: attr(data-language);
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.5em;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 0.75em;
+    text-transform: uppercase;
 }
