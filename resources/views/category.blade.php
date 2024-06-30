@@ -1,4 +1,7 @@
 @extends('layouts.master')
+@push('css')
+    <link rel="stylesheet" href="{{ asset('aos-master/dist/aos.css') }}">
+@endpush
 @section('content')
     <!-- Page header with logo and tagline-->
     <header class="py-5 bg-light border-bottom mb-4">
@@ -28,7 +31,7 @@
                 <!-- Nested row for non-featured blog posts-->
                 <div class="row">
                     @foreach ($articles as $item)
-                        <div class="col-lg-4">
+                        <div class="col-lg-4" data-aos="flip-up">
                             <!-- Blog post-->
                             <div class="card mb-4">
                                 <a href="{{ route('blog.show', ['slug' => $item->slug]) }}"><img class="card-img-top post-img"
@@ -60,3 +63,9 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script src="{{ asset('aos-master/dist/aos.js') }}"></script>
+    <script>
+        AOS.init();
+    </script>
+@endpush

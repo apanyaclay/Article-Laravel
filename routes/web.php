@@ -11,6 +11,7 @@ use App\Http\Controllers\Konfigurasi\MenuController;
 use App\Http\Controllers\Konfigurasi\PermissionController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Konfigurasi\RoleController;
+use App\Http\Controllers\Konfigurasi\SettingController;
 use App\Http\Controllers\Konfigurasi\SubMenuController;
 use App\Http\Controllers\Konfigurasi\UserController;
 use App\Http\Controllers\TagController;
@@ -141,6 +142,10 @@ Route::group(['prefix' => 'konfigurasi', 'middleware' => ['auth']], function(){
         Route::get('user/{id}/edit', 'edit')->name('user.edit')->middleware('permission:update user');
         Route::put('user/{id}/edit', 'update')->name('user.update');
         Route::get('user/{id}/delete', 'destroy')->name('user.destroy')->middleware('permission:delete user');
+    });
+    Route::controller(SettingController::class)->group(function(){
+        Route::get('setting', 'index')->name('setting.index')->middleware('permission:view setting');
+        Route::post('setting', 'update')->name('setting.update');
     });
 });
 

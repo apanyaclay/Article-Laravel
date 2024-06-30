@@ -1,5 +1,5 @@
 <!-- Side widgets-->
-<div class="col-lg-4">
+<div class="col-lg-4" data-aos="fade-left">
     <!-- Search widget-->
     <div class="card mb-4">
         <div class="card-header">{{ __('app-front.search') }}</div>
@@ -22,16 +22,28 @@
                 @foreach ($categories as $item)
                     <span>
                         <a href="{{ route('blog.category', ['id' => $item->id]) }}"
-                            class="bg-primary badge text-white categories">{{ $item->name }}</a>
+                            class="bg-primary badge text-white categories">{{ $item->name }} ({{$item->articles_count}})</a>
                     </span>
                 @endforeach
             </div>
         </div>
     </div>
-    <!-- Side widget-->
+    <!-- Popular Post-->
     <div class="card mb-4">
-        <div class="card-header">Side Widget</div>
-        <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and
-            feature the Bootstrap 5 card component!</div>
+        <div class="card-header">Popular Post</div>
+        <div class="card-body">
+            <ul class="list-group">
+                @foreach ($populars as $item)
+                <li class="list-group-item d-flex align-items-center">
+                    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover; margin-right: 10px;">
+                    <div>
+                        <a href="{{ route('blog.article', ['id' => $item->id]) }}">{{ $item->title }}</a>
+                        <br>
+                        <small>{!! Str::limit(strip_tags($item->content), 100) !!}</small>
+                    </div>
+                </li>
+                @endforeach
+            </ul>
+        </div>
     </div>
 </div>

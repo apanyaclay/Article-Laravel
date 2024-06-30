@@ -18,4 +18,9 @@ class Categorie extends Model
     {
         return $this->belongsTo(Categorie::class, 'parent_id');
     }
+
+    public function Articles()
+    {
+        return $this->hasMany(Article::class, 'category_id', 'id');
+    }
 }

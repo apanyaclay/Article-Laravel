@@ -1,4 +1,8 @@
 @extends('layouts.master')
+@push('css')
+    <!-- IR-Black Theme -->
+    <link rel="stylesheet" href="{{ asset('ckeditor/plugins/codesnippet/lib/highlight/styles/ir_black.css') }}">
+@endpush
 @section('content')
     <!-- Page content-->
     <div class="container mt-5">
@@ -9,20 +13,23 @@
                     <!-- Post header-->
                     <header class="mb-4">
                         <!-- Post title-->
-                        <h1 class="fw-bolder mb-1">{{$article->title}}</h1>
+                        <h1 class="fw-bolder mb-1">{{ $article->title }}</h1>
                         <!-- Post meta content-->
-                        <div class="text-muted fst-italic mb-2">{{__('app-front.posted_on')}} {{ \Carbon\Carbon::parse($article->published_date)->translatedFormat('d F, Y') }} {{__('app-front.by')}} {{$article->Author->name}}</div>
+                        <div class="text-muted fst-italic mb-2">{{ __('app-front.posted_on') }}
+                            {{ \Carbon\Carbon::parse($article->published_date)->translatedFormat('d F, Y') }}
+                            {{ __('app-front.by') }} {{ $article->Author->name }}</div>
                         <!-- Post categories-->
                         @foreach ($tag as $item)
-                        <a class="badge bg-secondary text-decoration-none link-light" href="{{route('blog.tag', ['id' => $item->tag_id])}}">{{$item->tag->name}}</a>
+                            <a class="badge bg-secondary text-decoration-none link-light"
+                                href="{{ route('blog.tag', ['id' => $item->tag_id]) }}">{{ $item->tag->name }}</a>
                         @endforeach
                     </header>
                     <!-- Preview image figure-->
                     <figure class="mb-4"><img class="img-fluid rounded detail-img"
-                            src="{{asset('storage/'.$article->image)}}" alt="{{$article->slug}}" /></figure>
+                            src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->slug }}" /></figure>
                     <!-- Post content-->
                     <section class="mb-5">
-                        {!!$article->content!!}
+                        {!! $article->content !!}
                     </section>
                 </article>
                 <!-- Comments section-->
@@ -78,7 +85,33 @@
                     </div>
                 </section>
             </div>
-           @include('layouts.side-widget')
+            @include('layouts.side-widget')
         </div>
     </div>
 @endsection
+@push('js')
+    <!-- Highlight JS-->
+    <script src="{{ asset('ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            hljs.initHighlightingOnLoad();
+
+            // JavaScript untuk menambahkan kelas dan data-language
+            const codeBlocks = document.querySelectorAll('pre code');
+            console.log(codeBlocks);
+
+            codeBlocks.forEach(block => {
+                // Pastikan elemen <code> memiliki kelas bahasa
+                if (block.classList.length > 0) {
+                    const language = block.classList[
+                        0]; // Ambil kelas bahasa pertama (misalnya "language-javascript")
+                    if (language.startsWith('language-')) {
+                        block.setAttribute('data-language', language.slice(
+                            9)); // Potong "language-" untuk mendapatkan nama bahasa
+                        console.log("data-language:", block.getAttribute("data-language"));
+                    }
+                }
+            });
+        });
+    </script>
+@endpush

@@ -1,4 +1,11 @@
 @extends('layouts.master')
+@push('seo')
+    <meta name="description" content="{{ $settings['meta_description'] ?? '' }}">
+    <meta name="keywords" content="{{ $settings['meta_keywords'] ?? '' }}">
+@endpush
+@push('css')
+    <link rel="stylesheet" href="{{ asset('aos-master/dist/aos.css') }}">
+@endpush
 @section('content')
     <!-- Page header with logo and tagline-->
     <header class="py-5 bg-light border-bottom mb-4">
@@ -15,29 +22,37 @@
             <!-- Blog entries-->
             <div class="col-lg-8">
                 <!-- Featured blog post-->
-                <div class="card mb-4">
-                    <a href="{{ route('blog.show', ['slug' => $featured->slug]) }}"><img class="card-img-top feature-img" src="{{asset('storage/'.$featured->image)}}"
-                            alt="{{$featured->slug}}" /></a>
+                <div class="card mb-4" data-aos="fade-in">
+                    <a href="{{ route('blog.show', ['slug' => $featured->slug]) }}"><img class="card-img-top feature-img"
+                            src="{{ asset('storage/' . $featured->image) }}" alt="{{ $featured->slug }}" /></a>
                     <div class="card-body">
-                        <div class="small text-muted">{{ \Carbon\Carbon::parse($featured->published_date)->translatedFormat('d F, Y') }}</div>
+                        <div class="small text-muted">
+                            {{ \Carbon\Carbon::parse($featured->published_date)->translatedFormat('d F, Y') }}</div>
                         <h2 class="card-title">{{ $featured->title }}</h2>
-                        <p class="card-text">{!!Str::limit(strip_tags($featured->content), 200)!!}</p>
-                        <a class="btn btn-primary" href="{{ route('blog.show', ['slug' => $featured->slug]) }}">{{__('app-front.read_more')}} →</a>
+                        <p class="card-text">{!! Str::limit(strip_tags($featured->content), 200) !!}</p>
+                        <a class="btn btn-primary"
+                            href="{{ route('blog.show', ['slug' => $featured->slug]) }}">{{ __('app-front.read_more') }}
+                            →</a>
                     </div>
                 </div>
                 <!-- Nested row for non-featured blog posts-->
                 <div class="row">
                     @foreach ($articles as $item)
-                        <div class="col-lg-6">
+                        <div class="col-lg-6" data-aos="fade-up">
                             <!-- Blog post-->
                             <div class="card mb-4">
-                                <a href="{{ route('blog.show', ['slug' => $item->slug]) }}"><img class="card-img-top post-img"
-                                        src="{{asset('storage/'.$item->image)}}" alt="{{$item->slug}}" /></a>
+                                <a href="{{ route('blog.show', ['slug' => $item->slug]) }}"><img
+                                        class="card-img-top post-img" src="{{ asset('storage/' . $item->image) }}"
+                                        alt="{{ $item->slug }}" /></a>
                                 <div class="card-body card-height">
-                                    <div class="small text-muted">{{ \Carbon\Carbon::parse($item->published_date)->translatedFormat('d F, Y') }}</div>
+                                    <div class="small text-muted">
+                                        {{ \Carbon\Carbon::parse($item->published_date)->translatedFormat('d F, Y') }}
+                                    </div>
                                     <h2 class="card-title h4">{{ $item->title }}</h2>
-                                    <p class="card-text">{!!Str::limit(strip_tags($item->content), 200)!!}</p>
-                                    <a class="btn btn-primary" href="{{ route('blog.show', ['slug' => $item->slug]) }}">{{__('app-front.read_more')}} →</a>
+                                    <p class="card-text">{!! Str::limit(strip_tags($item->content), 200) !!}</p>
+                                    <a class="btn btn-primary"
+                                        href="{{ route('blog.show', ['slug' => $item->slug]) }}">{{ __('app-front.read_more') }}
+                                        →</a>
                                 </div>
                             </div>
                         </div>
@@ -57,3 +72,9 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script src="{{ asset('aos-master/dist/aos.js') }}"></script>
+    <script>
+        AOS.init();
+    </script>
+@endpush

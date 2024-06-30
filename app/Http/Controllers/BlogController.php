@@ -19,18 +19,17 @@ class BlogController extends Controller
             'title' => 'Blog',
             'articles' => Article::whereStatus('published')->latest()->paginate(9),
             'featured' => Article::whereStatus('published')->latest()->firstOrFail(),
-            'categories' => Categorie::all(),
         ]);
     }
     public function show(string $slug)
     {
         $article = Article::where('slug', $slug)->firstOrFail();
+        $article->increment('views');
         $tag = ArticleTag::where('article_id', $article->id)->get();
         return view('blog-detail', [
             'title' => 'Blog Detail',
             'article' => $article,
             'tag' => $tag,
-            'categories' => Categorie::all(),
         ]);
     }
 

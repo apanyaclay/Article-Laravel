@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\TelegramArticle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -83,7 +84,7 @@ class ArticleController extends Controller
                 ];
                 // $article->notify(new TelegramArticle($telegram));
             }
-
+            Log::info('content:', [$data['content']]);
             DB::commit();
             return redirect()->route('article.index')->with('success', 'Article update successfully');
         } catch (\Exception $th) {
@@ -93,9 +94,10 @@ class ArticleController extends Controller
     }
     public function show($id)
     {
+        $article = Article::with('category')->findOrFail($id);
         return view('article.show', [
             'title' => 'Detail Articles',
-            'article' => Article::with('category')->find($id),
+            'article' => $article,
         ]);
     }
     public function edit($id)
